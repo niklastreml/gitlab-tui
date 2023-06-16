@@ -19,8 +19,10 @@ use ratatui::{backend::CrosstermBackend, Terminal};
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (domain, namespace) = api::get_gitlab_remote("glab")?;
+    let token = api::get_token(domain.clone())?;
+    println!("HERE");
 
-    let api = gitlab::Gitlab::new(domain, "test")?;
+    let api = gitlab::Gitlab::new(domain, token)?;
 
     let app = Arc::new(Mutex::new(App::default()));
     // create app and run it

@@ -1,4 +1,5 @@
-use std::{error::Error, string};
+use netrc_rs;
+use std::{error::Error, fs, string};
 
 use git2::{Remote, Repository};
 use thiserror::Error;
@@ -42,6 +43,7 @@ fn get_namespace_from_http(url: Url) -> Result<(String, String), Box<dyn Error>>
 
     Ok((domain.to_string(), namespace.to_string()))
 }
+
 fn get_namespace_from_ssh(url: String) -> Result<(String, String), Box<dyn Error>> {
     todo!()
 }
@@ -56,3 +58,35 @@ pub enum RemoteUrlParseError {
     InvalidNamespace,
 }
 
+#[derive(Debug, Error)]
+pub enum NetrcError {
+    #[error("Could not find .netrc")]
+    NotFound,
+    #[error("Invalid netrc")]
+    Invalid,
+    #[error("Could not find machine for domain in netrc")]
+    MachineNotFound,
+    #[error("No password set for domain in netrc")]
+    NoPassword,
+}
+
+// parses .netrc  and tries to find a token for <domain>
+pub fn get_token(domain: String) -> Result<String, Box<dyn Error>> {
+    let home_dir = std::env::home_dir()
+        .ok_or(NetrcError::NotFound)?
+        .join(".netrc");
+    let netrc: String = fs::read_to_string(home_dir)?.parse()?;
+
+    let res = netrc_rs::Netrc::parse(netrc, false).or(Err(NetrcError::Invalid))?;
+
+    let machine = res
+        .machines
+        .iter()
+        .find(|machine| {
+            machine.login == Some("__token__".to_string()) && machine.name == Some(domain.clone())
+        })
+        .ok_or(NetrcError::MachineNotFound)?;
+
+    let i = machine.password.clone().ok_or(NetrcError::NoPassword);
+    Ok(i?)
+}
