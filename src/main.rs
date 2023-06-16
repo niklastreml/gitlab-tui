@@ -1,7 +1,9 @@
+mod api;
 mod app;
 mod handlers;
 mod ui;
-use std::{io, sync::Arc};
+use gitlab::Gitlab;
+use std::{io, process::exit, sync::Arc};
 use tokio::sync::Mutex;
 
 use app::App;
@@ -16,9 +18,13 @@ use ratatui::{backend::CrosstermBackend, Terminal};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let (domain, namespace) = api::get_gitlab_remote("glab")?;
+
+    let api = gitlab::Gitlab::new(domain, "test")?;
+
     let app = Arc::new(Mutex::new(App::default()));
     // create app and run it
-    let res = run_ui(&app).await;
+    let res = run_ui(&app.clone()).await;
 
     if let Err(err) = res {
         println!("{err:?}");

@@ -13,6 +13,7 @@ pub struct App {
     pub active_block: Option<ActiveBlock>,
     pub selected_issue: Option<usize>,
     pub selected_mr: Option<usize>,
+    pub active_git_remote: Option<String>,
     pub route: Route,
 }
 
@@ -62,6 +63,7 @@ impl App {
             selected_issue: None,
             selected_mr: None,
             route: Route::Root,
+            active_git_remote: None,
         }
     }
 
