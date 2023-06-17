@@ -16,17 +16,24 @@ use crossterm::{
 };
 use ratatui::{backend::CrosstermBackend, Terminal};
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (domain, namespace) = api::get_gitlab_remote("glab")?;
     let token = api::get_token(domain.clone())?;
-    println!("HERE");
 
-    let api = gitlab::Gitlab::new(domain, token)?;
+    let api = {
+        let this = gitlab::Gitlab::new(domain, token);
+        match this {
+            Ok(t) => t,
+            Err(e) => panic!("Failed to connect to gitlab: {}", e),
+        }
+    };
 
     let app = Arc::new(Mutex::new(App::default()));
     // create app and run it
-    let res = run_ui(&app.clone()).await;
+    match run_ui(&app.clone()) {
+        Ok(_) => {}
+        Err(e) => panic!("Failed to render UI: {}", e),
+    }
 
     if let Err(err) = res {
         println!("{err:?}");
@@ -35,6 +42,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[tokio::main]
 async fn run_ui(app: &Arc<Mutex<App>>) -> io::Result<()> {
     // setup terminal
     enable_raw_mode()?;
