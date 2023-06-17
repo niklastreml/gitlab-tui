@@ -9,5 +9,8 @@ edition = "2021"
 crossterm = "0.26"
 ratatui = "0.20"
 tokio = { version = "1.28.2", features = ["full"] }
+git2 = {version = "0.17.2", features = ["vendored-openssl"]}
 gitlab = {version = "0.1600.1"}
-
+url = "2.4.0"
+thiserror = "1.0.40"
+netrc-rs = "0.1.2"
