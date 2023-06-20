@@ -15,55 +15,34 @@ pub struct App {
     pub selected_mr: Option<usize>,
     pub active_git_remote: Option<String>,
     pub route: Route,
+    pub request_queue: Vec<Task>,
+}
+
+#[derive(Debug)]
+pub enum Task {
+    UpdateIssues,
+    UpdateMRs,
+    FetchIssue(i32),
 }
 
 impl Default for App {
     fn default() -> Self {
-        App::new(
-            vec![
-                Issue::new(
-                    ProjectId::new(12345),
-                    "Weird bug in production".to_string(),
-                    UserBasic {
-                        username: "NiklasTreml".to_string(),
-                        name: "Niklas Treml".to_string(),
-                        avatar_url: None,
-                        web_url: "".to_string(),
-                        state: UserState::Active,
-                        id: UserId::new(1),
-                    },
-                )
-                .with_description("So production kind of died".to_string()),
-                Issue::new(
-                    ProjectId::new(12345),
-                    "Fix everything".to_string(),
-                    UserBasic {
-                        username: "NiklasTreml".to_string(),
-                        name: "Niklas Treml".to_string(),
-                        avatar_url: None,
-                        web_url: "".to_string(),
-                        state: UserState::Active,
-                        id: UserId::new(2),
-                    },
-                )
-                .with_description("Everything is broken".to_string()),
-            ],
-            vec![],
-        )
+        App::new()
     }
 }
 
 impl App {
-    pub fn new(issues: Vec<Issue>, mrs: Vec<MergeRequest>) -> Self {
+    pub fn new() -> Self {
         Self {
-            issues,
-            mrs,
+            issues: vec![],
+            mrs: vec![],
             highlighted_block: ActiveBlock::IssueList,
             active_block: None,
             selected_issue: None,
             selected_mr: None,
             route: Route::Root,
             active_git_remote: None,
+            request_queue: vec![],
         }
     }
 
