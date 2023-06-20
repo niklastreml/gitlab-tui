@@ -33,7 +33,7 @@ where
 
     let mut text = vec![
         Spans::from(vec![
-            Span::raw("!"),
+            Span::raw("#"),
             Span::raw(issue.iid.to_string()),
             Span::raw(" "),
             Span::styled(issue.title, Style::default().add_modifier(Modifier::BOLD)),
