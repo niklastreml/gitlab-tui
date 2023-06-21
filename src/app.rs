@@ -15,14 +15,6 @@ pub struct App {
     pub selected_mr: Option<usize>,
     pub active_git_remote: Option<String>,
     pub route: Route,
-    pub request_queue: Vec<Task>,
-}
-
-#[derive(Debug)]
-pub enum Task {
-    UpdateIssues,
-    UpdateMRs,
-    FetchIssue(i32),
 }
 
 impl Default for App {
@@ -42,7 +34,6 @@ impl App {
             selected_mr: None,
             route: Route::Root,
             active_git_remote: None,
-            request_queue: vec![],
         }
     }
 
