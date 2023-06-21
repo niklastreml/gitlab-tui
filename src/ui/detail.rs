@@ -29,12 +29,12 @@ pub fn draw_issue_details<B>(f: &mut Frame<B>, app: &App, layout_chunk: Rect)
 where
     B: Backend,
 {
-    let issue = app.issues[app.selected_issue.unwrap()].clone();
+    let issue = app.issues[app.selected_issue.unwrap_or(0)].clone();
 
-    let text = vec![
+    let mut text = vec![
         Spans::from(vec![
-            Span::raw("!"),
-            Span::raw(issue.id.to_string()),
+            Span::raw("#"),
+            Span::raw(issue.iid.to_string()),
             Span::raw(" "),
             Span::styled(issue.title, Style::default().add_modifier(Modifier::BOLD)),
         ]),
@@ -70,11 +70,16 @@ where
             ),
         ]),
         Spans::from(vec![Span::raw(render_line(layout_chunk))]),
-        Spans::from(vec![Span::styled(
-            issue.description.unwrap_or("".to_string()),
-            Style::default(),
-        )]),
     ];
+
+    text.extend(
+        issue
+            .description
+            .unwrap_or("".to_string())
+            .lines()
+            .map(|l| Spans::from(Span::styled(l.to_string(), Style::default()))),
+    );
+
     let b = Paragraph::new(text).block(
         Block::default()
             .borders(Borders::ALL)
