@@ -45,7 +45,16 @@ fn get_namespace_from_http(url: Url) -> Result<(String, String), Box<dyn Error>>
 }
 
 fn get_namespace_from_ssh(url: String) -> Result<(String, String), Box<dyn Error>> {
-    todo!()
+    let domain = url
+        .split_once("@")
+        .ok_or(RemoteSshParseError::MissingAt)?
+        .1
+        .split_once(".git")
+        .ok_or(RemoteSshParseError::MissingDotGit)?
+        .0
+        .split_once(":")
+        .ok_or(RemoteSshParseError::MissingSemicolon)?;
+    Ok((domain.0.to_string(), domain.1.to_string()))
 }
 
 #[derive(Debug, Error)]
@@ -56,6 +65,16 @@ pub enum RemoteUrlParseError {
     InvalidDomain,
     #[error("The provided url did not have a valid namespace")]
     InvalidNamespace,
+}
+
+#[derive(Debug, Error)]
+pub enum RemoteSshParseError {
+    #[error("The ssh url is missing an at")]
+    MissingAt,
+    #[error("The ssh url is missing a .git")]
+    MissingDotGit,
+    #[error("The ssh url is missing a colon (:)")]
+    MissingSemicolon,
 }
 
 #[derive(Debug, Error)]
