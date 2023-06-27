@@ -109,3 +109,20 @@ pub fn get_token(domain: String) -> Result<String, Box<dyn Error>> {
     let i = machine.password.clone().ok_or(NetrcError::NoPassword);
     Ok(i?)
 }
+
+#[cfg(test)]
+mod tests {
+    use url::Url;
+
+    use super::*;
+
+    #[test]
+    fn test_ssh_and_http_parser_same_output() {
+        let ssh = "git@gitlab.com:NiklasTreml/gitlab-tui.git".to_string();
+        let http = Url::parse("https://gitlab.com/NiklasTreml/gitlab-tui.git").unwrap();
+        let (ssh_domain, ssh_ns) = get_namespace_from_ssh(ssh).unwrap();
+        let (http_domain, http_ns) = get_namespace_from_http(http).unwrap();
+        assert_eq!(ssh_domain, http_domain);
+        assert_eq!(ssh_ns, http_ns);
+    }
+}
