@@ -7,7 +7,7 @@ jobs:
         platform:
           - release_for: Windows-x86_64
             os: ubuntu-20.04
-            target: x86_64-pc-windows-msvc
+            target: x86_64-pc-windows-gnu
             bin: precious.exe
             name: precious-Windows-x86_64.zip
             command: build
