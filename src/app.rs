@@ -4,6 +4,7 @@ use gitlab::{types::Issue, MergeRequest};
 pub enum ActiveBlock {
     IssueList,
     MRList,
+    Details,
 }
 #[derive(Debug)]
 pub struct App {
@@ -11,10 +12,14 @@ pub struct App {
     pub mrs: Vec<MergeRequest>,
     pub highlighted_block: ActiveBlock,
     pub active_block: Option<ActiveBlock>,
+    pub previous_active_block: Option<ActiveBlock>, // this should be done with a routing stack
+    // probably
     pub selected_issue: Option<usize>,
+    pub word_wrap: bool,
     pub selected_mr: Option<usize>,
     pub active_git_remote: Option<String>,
     pub route: Route,
+    pub scroll_offset: (u16, u16),
 }
 
 impl Default for App {
@@ -29,12 +34,36 @@ impl App {
             issues: vec![],
             mrs: vec![],
             highlighted_block: ActiveBlock::IssueList,
+            previous_active_block: None,
             active_block: None,
+            word_wrap: false,
             selected_issue: None,
             selected_mr: None,
             route: Route::Root,
             active_git_remote: None,
+            scroll_offset: (0, 0),
         }
+    }
+    pub fn reset_scroll(&mut self) {
+        self.scroll_offset = (0, 0);
+    }
+    pub fn scroll_up(&mut self) {
+        if self.scroll_offset.0 == 0 {
+            return;
+        }
+        self.scroll_offset.0 -= 1;
+    }
+    pub fn scroll_down(&mut self) {
+        self.scroll_offset.0 += 1;
+    }
+    pub fn scroll_left(&mut self) {
+        if self.scroll_offset.1 == 0 {
+            return;
+        }
+        self.scroll_offset.1 -= 1;
+    }
+    pub fn scroll_right(&mut self) {
+        self.scroll_offset.1 += 1;
     }
 
     pub fn next_issue(&mut self) {

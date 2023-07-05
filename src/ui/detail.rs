@@ -3,12 +3,14 @@ use ratatui::{
     layout::Rect,
     style::{Modifier, Style},
     text::{Span, Spans},
-    widgets::{Block, BorderType, Borders, Paragraph},
+    widgets::{Block, BorderType, Borders, Paragraph, Wrap},
     Frame,
 };
 
-use crate::app::App;
+use crate::app::{ActiveBlock, App};
 use crate::ui::types::*;
+
+use super::main_ui::get_color;
 
 pub fn draw_root<B>(f: &mut Frame<B>, _app: &App, layout_chunk: Rect)
 where
@@ -25,8 +27,15 @@ where
     f.render_widget(b, layout_chunk)
 }
 
-fn draw_details<B>(f: &mut Frame<B>, id_prefix: &str, item: Details, layout_chunk: Rect)
-where
+fn draw_details<B>(
+    f: &mut Frame<B>,
+    id_prefix: &str,
+    item: Details,
+    scroll_offset: (u16, u16),
+    highlight_state: (bool, bool),
+    word_wrap: bool,
+    layout_chunk: Rect,
+) where
     B: Backend,
 {
     let mut text = vec![
@@ -76,12 +85,19 @@ where
             .map(|l| Spans::from(Span::styled(l.to_string(), Style::default()))),
     );
 
-    let b = Paragraph::new(text).block(
-        Block::default()
-            .borders(Borders::ALL)
-            .border_type(BorderType::Thick)
-            .title("Details"),
-    );
+    let mut b = Paragraph::new(text)
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .border_type(BorderType::Thick)
+                .border_style(Style::default().fg(get_color(highlight_state)))
+                .title("Details"),
+        )
+        .scroll(scroll_offset);
+
+    if word_wrap {
+        b = b.wrap(Wrap { trim: false });
+    }
 
     f.render_widget(b, layout_chunk)
 }
@@ -92,12 +108,23 @@ where
 {
     let issue = app.issues[app.selected_issue.unwrap_or(0)].clone();
 
-    draw_details(f, "#", issue.into(), layout_chunk);
+    draw_details(
+        f,
+        "#",
+        issue.into(),
+        app.scroll_offset,
+        (
+            app.active_block == Some(ActiveBlock::Details),
+            app.highlighted_block == ActiveBlock::Details,
+        ),
+        app.word_wrap,
+        layout_chunk,
+    );
 }
 
 fn render_line(rect: Rect) -> String {
     let mut s = String::new();
-    for _ in 0..rect.width {
+    for _ in 0..rect.width - 2 {
         s.push('-');
     }
     s
@@ -109,5 +136,16 @@ where
 {
     let mr = app.mrs[app.selected_mr.unwrap_or(0)].clone();
 
-    draw_details(f, "!", mr.into(), layout_chunk);
+    draw_details(
+        f,
+        "!",
+        mr.into(),
+        app.scroll_offset,
+        (
+            app.active_block == Some(ActiveBlock::Details),
+            app.highlighted_block == ActiveBlock::Details,
+        ),
+        app.word_wrap,
+        layout_chunk,
+    );
 }
