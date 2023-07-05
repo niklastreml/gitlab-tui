@@ -1,6 +1,6 @@
 use crossterm::event::{KeyCode, KeyEvent};
 
-use crate::app::{App, Route};
+use crate::app::{ActiveBlock, App, Route};
 
 pub fn handle_mrlist(e: KeyEvent, app: &mut App) {
     match e {
@@ -15,7 +15,11 @@ pub fn handle_mrlist(e: KeyEvent, app: &mut App) {
         KeyEvent {
             code: KeyCode::Enter,
             ..
-        } => app.route = Route::MergeRequestDetail,
+        } => {
+            app.route = Route::MergeRequestDetail;
+            app.active_block = Some(ActiveBlock::Details);
+            app.highlighted_block = ActiveBlock::Details;
+        }
         KeyEvent {
             code: KeyCode::Esc, ..
         } => app.active_block = None,

@@ -113,7 +113,7 @@ pub fn draw_selectable_list<B, S>(
     f.render_stateful_widget(list, layout_chunk, &mut state);
 }
 
-fn get_color(highlight_state: (bool, bool)) -> Color {
+pub fn get_color(highlight_state: (bool, bool)) -> Color {
     let (active, highlight) = highlight_state;
     if active {
         return Color::Green;
