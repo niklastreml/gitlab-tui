@@ -7,10 +7,7 @@ use ratatui::{
     Frame,
 };
 
-use crate::app::{
-    ActiveBlock, App,
-    Route::{self, Root},
-};
+use crate::app::{ActiveBlock, App, Route};
 
 use super::detail;
 
@@ -75,13 +72,13 @@ where
             app.active_block == Some(ActiveBlock::MRList),
             app.highlighted_block == ActiveBlock::MRList,
         ),
-        Some(0),
+        app.selected_mr,
     );
 }
 
 pub fn draw_selectable_list<B, S>(
     f: &mut Frame<B>,
-    app: &App,
+    _app: &App,
     title: &str,
     items: &[S],
     layout_chunk: Rect,
@@ -104,9 +101,9 @@ pub fn draw_selectable_list<B, S>(
             Block::default()
                 .title(title)
                 .borders(Borders::ALL)
-                .border_type(BorderType::Plain),
+                .border_type(BorderType::Plain)
+                .border_style(Style::default().fg(get_color(highlight_state))),
         )
-        .style(Style::default().fg(get_color(highlight_state)))
         .highlight_style(
             Style::default()
                 .fg(get_color(highlight_state))

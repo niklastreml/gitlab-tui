@@ -1,5 +1,5 @@
 // use gitlab;
-use gitlab::{types::Issue, MergeRequest, ProjectId, UserBasic, UserId, UserState};
+use gitlab::{types::Issue, MergeRequest};
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum ActiveBlock {
     IssueList,
