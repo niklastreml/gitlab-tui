@@ -1,7 +1,7 @@
 use netrc_rs;
 use std::{error::Error, fs};
 
-use git2::{Repository};
+use git2::Repository;
 use thiserror::Error;
 use url::{ParseError, Url};
 
@@ -59,8 +59,6 @@ fn get_namespace_from_ssh(url: String) -> Result<(String, String), Box<dyn Error
 
 #[derive(Debug, Error)]
 pub enum RemoteUrlParseError {
-    #[error("The provided url was not a valid ssh or https url")]
-    NotSshOrHttp,
     #[error("The provided url did not include a valid domain")]
     InvalidDomain,
     #[error("The provided url did not have a valid namespace")]

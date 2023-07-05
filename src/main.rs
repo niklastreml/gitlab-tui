@@ -3,11 +3,9 @@ mod app;
 mod handlers;
 mod ui;
 
-use gitlab::{
-    api::{
-        projects::{issues::Issues, merge_requests::MergeRequests},
-        AsyncQuery,
-    },
+use gitlab::api::{
+    projects::{issues::Issues, merge_requests::MergeRequests},
+    AsyncQuery,
 };
 use std::{io, sync::Arc};
 use tokio::sync::Mutex;
@@ -94,7 +92,7 @@ async fn run_fetch(app: Arc<Mutex<App>>) -> Option<Box<dyn std::error::Error>> {
     // have queue on app
     // continously pull work items out of queue and run requests and update corresponding state
     // in separate thread, every second push update request
-    let (domain, namespace) = api::get_gitlab_remote("glab").ok()?; // todo change
+    let (domain, namespace) = api::get_gitlab_remote("origin").ok()?; // todo change
     let token = api::get_token(domain.clone()).ok()?;
 
     let api = {
@@ -123,5 +121,4 @@ async fn run_fetch(app: Arc<Mutex<App>>) -> Option<Box<dyn std::error::Error>> {
         }
         sleep(Duration::from_secs(1)).await;
     }
-    None
 }
