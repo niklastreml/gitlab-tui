@@ -33,6 +33,7 @@ fn draw_details<B>(
     item: Details,
     scroll_offset: (u16, u16),
     highlight_state: (bool, bool),
+    word_wrap: bool,
     layout_chunk: Rect,
 ) where
     B: Backend,
@@ -84,7 +85,7 @@ fn draw_details<B>(
             .map(|l| Spans::from(Span::styled(l.to_string(), Style::default()))),
     );
 
-    let b = Paragraph::new(text)
+    let mut b = Paragraph::new(text)
         .block(
             Block::default()
                 .borders(Borders::ALL)
@@ -93,6 +94,10 @@ fn draw_details<B>(
                 .title("Details"),
         )
         .scroll(scroll_offset);
+
+    if word_wrap {
+        b = b.wrap(Wrap { trim: false });
+    }
 
     f.render_widget(b, layout_chunk)
 }
@@ -112,6 +117,7 @@ where
             app.active_block == Some(ActiveBlock::Details),
             app.highlighted_block == ActiveBlock::Details,
         ),
+        app.word_wrap,
         layout_chunk,
     );
 }
@@ -139,6 +145,7 @@ where
             app.active_block == Some(ActiveBlock::Details),
             app.highlighted_block == ActiveBlock::Details,
         ),
+        app.word_wrap,
         layout_chunk,
     );
 }

@@ -21,6 +21,10 @@ pub fn handle_details(e: KeyEvent, app: &mut App) {
             ..
         } => app.scroll_right(),
         KeyEvent {
+            code: KeyCode::Char('w'),
+            ..
+        } => app.word_wrap = !app.word_wrap,
+        KeyEvent {
             code: KeyCode::Esc, ..
         } => {
             app.active_block = app.previous_active_block;

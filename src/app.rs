@@ -15,6 +15,7 @@ pub struct App {
     pub previous_active_block: Option<ActiveBlock>, // this should be done with a routing stack
     // probably
     pub selected_issue: Option<usize>,
+    pub word_wrap: bool,
     pub selected_mr: Option<usize>,
     pub active_git_remote: Option<String>,
     pub route: Route,
@@ -35,6 +36,7 @@ impl App {
             highlighted_block: ActiveBlock::IssueList,
             previous_active_block: None,
             active_block: None,
+            word_wrap: false,
             selected_issue: None,
             selected_mr: None,
             route: Route::Root,
