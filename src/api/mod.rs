@@ -1,14 +1,14 @@
 use netrc_rs;
-use std::{error::Error, fs, string};
+use std::{error::Error, fs};
 
-use git2::{Remote, Repository};
+use git2::{Repository};
 use thiserror::Error;
 use url::{ParseError, Url};
 
 pub fn get_gitlab_remote(origin: &str) -> Result<(String, String), Box<dyn Error>> {
     let repo = Repository::open(".")?;
     let remote = origin;
-    let mut remote = repo.find_remote(remote)?;
+    let remote = repo.find_remote(remote)?;
 
     let url = remote.url().expect("No remote url was set");
     let parsed_url = parse_remote_to_gitlab_namespace(url)?;

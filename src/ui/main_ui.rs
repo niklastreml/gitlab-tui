@@ -78,7 +78,7 @@ where
 
 pub fn draw_selectable_list<B, S>(
     f: &mut Frame<B>,
-    app: &App,
+    _app: &App,
     title: &str,
     items: &[S],
     layout_chunk: Rect,

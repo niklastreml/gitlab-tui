@@ -6,12 +6,10 @@ mod ui;
 use gitlab::{
     api::{
         projects::{issues::Issues, merge_requests::MergeRequests},
-        AsyncQuery, Endpoint,
+        AsyncQuery,
     },
-    types::{Issue, MergeRequest},
-    Gitlab, ProjectId, UserId, UserState,
 };
-use std::{io, process::exit, sync::Arc};
+use std::{io, sync::Arc};
 use tokio::sync::Mutex;
 use tokio::task;
 use tokio::time::{sleep, Duration};

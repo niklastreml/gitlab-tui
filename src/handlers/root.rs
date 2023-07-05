@@ -1,4 +1,4 @@
-use crossterm::event::{KeyCode, KeyEvent, ModifierKeyCode};
+use crossterm::event::{KeyCode, KeyEvent};
 
 use crate::app::{ActiveBlock, App};
 
