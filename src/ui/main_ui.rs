@@ -7,10 +7,7 @@ use ratatui::{
     Frame,
 };
 
-use crate::app::{
-    ActiveBlock, App,
-    Route::{self, Root},
-};
+use crate::app::{ActiveBlock, App, Route};
 
 use super::detail;
 
@@ -123,17 +120,6 @@ fn get_color(highlight_state: (bool, bool)) -> Color {
     }
     if highlight {
         return Color::Magenta;
-    }
-
-    Color::White
-}
-fn get_font_color(highlight_state: (bool, bool)) -> Color {
-    let (active, highlight) = highlight_state;
-    if active {
-        return Color::Blue;
-    }
-    if highlight {
-        return Color::Red;
     }
 
     Color::White
