@@ -1,0 +1,31 @@
+jobs:
+  release:
+    name: Release - ${{ matrix.platform.release_for }}
+    strategy:
+      matrix:
+        platform:
+          - release_for: Windows-x86_64
+            os: ubuntu-20.04
+            target: x86_64-pc-windows-msvc
+            bin: precious.exe
+            name: precious-Windows-x86_64.zip
+            command: build
+          - release_for: Linux-x86_64
+            os: ubuntu-20.04
+            target: x86_64-unknown-linux-gnu
+            bin: precious
+            name: precious-Linux-x86_64.tar.gz
+            command: build
+            # more release targets here ...
+
+    runs-on: ${{ matrix.platform.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build binary
+        uses: houseabsolute/actions-rust-cross@v0
+        with:
+          command: ${{ matrix.platform.command }}
+          target: ${{ matrix.platform.target }}
+          args: "--locked --release"
+          strip: true
