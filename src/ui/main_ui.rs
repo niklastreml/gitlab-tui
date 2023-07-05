@@ -75,7 +75,7 @@ where
             app.active_block == Some(ActiveBlock::MRList),
             app.highlighted_block == ActiveBlock::MRList,
         ),
-        Some(0),
+        app.selected_mr,
     );
 }
 
@@ -104,9 +104,9 @@ pub fn draw_selectable_list<B, S>(
             Block::default()
                 .title(title)
                 .borders(Borders::ALL)
-                .border_type(BorderType::Plain),
+                .border_type(BorderType::Plain)
+                .border_style(Style::default().fg(get_color(highlight_state))),
         )
-        .style(Style::default().fg(get_color(highlight_state)))
         .highlight_style(
             Style::default()
                 .fg(get_color(highlight_state))
@@ -123,6 +123,17 @@ fn get_color(highlight_state: (bool, bool)) -> Color {
     }
     if highlight {
         return Color::Magenta;
+    }
+
+    Color::White
+}
+fn get_font_color(highlight_state: (bool, bool)) -> Color {
+    let (active, highlight) = highlight_state;
+    if active {
+        return Color::Blue;
+    }
+    if highlight {
+        return Color::Red;
     }
 
     Color::White
