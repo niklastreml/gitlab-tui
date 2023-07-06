@@ -54,7 +54,7 @@ jobs:
           # strip target/${{ matrix.target }}/release/gitlab-tui
 
           cd target/${{ matrix.target }}/release          
-          tar cvzf ../../../gitlab-tui-${{ matrix.target }}.tar.gz gitlab-tui*(.exe)
+          tar cvzf ../../../gitlab-tui-${{ matrix.target }}.tar.gz $(ls gitlab-tui*(.exe))
           cd -
 
       - name: Publish
