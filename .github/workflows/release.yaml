@@ -1,32 +1,63 @@
-on: push
+on:
+  push:
+    tags:
+      - "v*.*.*"
 jobs:
-  release:
-    name: Release - ${{ matrix.platform.release_for }}
+  create-release:
+    name: deploy
+    needs: [test]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform:
-          - release_for: Windows-x86_64
-            os: ubuntu-20.04
-            target: x86_64-pc-windows-gnu
-            bin: precious.exe
-            name: precious-Windows-x86_64.zip
-            command: build
-          - release_for: Linux-x86_64
-            os: ubuntu-20.04
-            target: x86_64-unknown-linux-gnu
-            bin: precious
-            name: precious-Linux-x86_64.tar.gz
-            command: build
-            # more release targets here ...
-
-    runs-on: ${{ matrix.platform.os }}
+        target: [
+            aarch64-unknown-linux-gnu,
+            # armv7-unknown-linux-gnueabihf,
+            # i686-unknown-linux-gnu,
+            # i686-unknown-linux-musl,
+            # mips-unknown-linux-gnu,
+            # mips64-unknown-linux-gnuabi64,
+            # mips64el-unknown-linux-gnuabi64,
+            # mipsel-unknown-linux-gnu,
+            # powerpc-unknown-linux-gnu,
+            # powerpc64-unknown-linux-gnu,
+            # powerpc64le-unknown-linux-gnu,
+            # arm-unknown-linux-gnueabi,
+            # x86_64-unknown-linux-gnu,
+            # x86_64-unknown-linux-musl,
+          ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v0
+        uses: actions/checkout@v1
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
         with:
-          command: ${{ matrix.platform.command }}
-          target: ${{ matrix.platform.target }}
-          args: "--locked --release"
-          strip: true
+          toolchain: stable
+          profile: minimal
+          override: true
+          target: ${{ matrix.target }}
+
+      - name: Build target
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target ${{ matrix.target }}
+
+      - name: Package
+        shell: bash
+        run: |
+          # TODO:
+          # strip target/${{ matrix.target }}/release/gitlab-tui
+
+          cd target/${{ matrix.target }}/release          
+          tar czvf ../../../gitlab-tui-${{ matrix.target }}.tar.gz gitlab-tui
+          cd -
+
+      - name: Publish
+        uses: softprops/action-gh-release@v1
+        # TODO: if any of the build step fails, the release should be deleted.
+        with:
+          files: "gitlab-tui*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
