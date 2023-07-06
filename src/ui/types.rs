@@ -6,6 +6,7 @@ use ratatui::style::Color;
 
 pub struct Details {
     pub iid: String,
+    pub url: String,
     pub title: String,
     pub description: String,
     pub state: Status,
@@ -18,6 +19,7 @@ impl From<Issue> for Details {
     fn from(value: Issue) -> Self {
         Details {
             iid: value.iid.to_string(),
+            url: value.web_url,
             title: value.title,
             description: value.description.unwrap_or("".to_string()),
             state: value.state.into(),
@@ -32,6 +34,7 @@ impl From<MergeRequest> for Details {
     fn from(value: MergeRequest) -> Self {
         Details {
             iid: value.iid.to_string(),
+            url: value.web_url,
             title: value.title,
             description: value.description.unwrap_or("".to_string()),
             state: value.state.into(),
