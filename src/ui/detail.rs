@@ -55,6 +55,7 @@ fn draw_details<B>(
                     .fg(item.state.into()),
             ),
         ]),
+        draw_metadata_entry("Link".to_string(), item.url),
         draw_metadata_entry("Created at".to_string(), item.created_at.to_string()),
         draw_metadata_entry("Updated at".to_string(), item.updated_at.to_string()),
         draw_metadata_entry("Created by".to_string(), item.author.name),
