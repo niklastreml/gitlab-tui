@@ -1,5 +1,5 @@
 // use gitlab;
-use gitlab::{types::Issue, MergeRequest};
+use gitlab::{types::Issue, MergeRequest, Project};
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum ActiveBlock {
     IssueList,
@@ -10,6 +10,7 @@ pub enum ActiveBlock {
 pub struct App {
     pub issues: Vec<Issue>,
     pub mrs: Vec<MergeRequest>,
+    pub project: Option<Project>,
     pub highlighted_block: ActiveBlock,
     pub active_block: Option<ActiveBlock>,
     pub previous_active_block: Option<ActiveBlock>, // this should be done with a routing stack
@@ -33,6 +34,7 @@ impl App {
         Self {
             issues: vec![],
             mrs: vec![],
+            project: None,
             highlighted_block: ActiveBlock::IssueList,
             previous_active_block: None,
             active_block: None,

@@ -1,3 +1,4 @@
+use gitlab::Project;
 use ratatui::{
     backend::Backend,
     layout::Rect,
@@ -12,11 +13,17 @@ use crate::ui::types::*;
 
 use super::main_ui::get_color;
 
-pub fn draw_root<B>(f: &mut Frame<B>, _app: &App, layout_chunk: Rect)
+pub fn draw_root<B>(f: &mut Frame<B>, app: &App, layout_chunk: Rect)
 where
     B: Backend,
 {
-    let text = "Hello world".to_string();
+    let text = match &app.project {
+        Some(project) => project_info(project, layout_chunk),
+        None => vec![draw_metadata_entry(
+            "Currently".to_string(),
+            "Loading".to_string(),
+        )],
+    };
     let b = Paragraph::new(text).block(
         Block::default()
             .borders(Borders::ALL)
@@ -27,6 +34,31 @@ where
     f.render_widget(b, layout_chunk)
 }
 
+fn project_info<'a>(project: &Project, layout_chunk: Rect) -> Vec<Spans<'a>> {
+    let mut spans = vec![
+        Spans::from(vec![Span::raw(project.name_with_namespace.clone())]),
+        Spans::from(draw_metadata_entry(
+            "Link".to_string(),
+            project.web_url.to_string(),
+        )),
+    ];
+
+    project
+        .tag_list
+        .iter()
+        .map(|t| t.clone())
+        .reduce(|prev, curr| format!("{}, {}", prev, curr))
+        .map(|tl| spans.push(draw_metadata_entry("Tags".to_string(), tl)));
+
+    project.description.clone().and_then(|desc| {
+        spans.push(draw_metadata_entry("Description".to_string(), desc));
+        None::<bool>
+    });
+
+    spans.push(Spans::from(vec![Span::raw(render_line(layout_chunk))]));
+
+    spans
+}
 fn draw_details<B>(
     f: &mut Frame<B>,
     id_prefix: &str,
