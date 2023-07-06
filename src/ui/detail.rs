@@ -41,6 +41,14 @@ fn project_info<'a>(project: &Project, layout_chunk: Rect) -> Vec<Spans<'a>> {
             "Link".to_string(),
             project.web_url.to_string(),
         )),
+        Spans::from(draw_metadata_entry(
+            "Stars".to_string(),
+            project.star_count.to_string(),
+        )),
+        Spans::from(draw_metadata_entry(
+            "Forks".to_string(),
+            project.forks_count.to_string(),
+        )),
     ];
 
     project
