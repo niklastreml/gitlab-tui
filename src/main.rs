@@ -4,7 +4,7 @@ mod handlers;
 mod ui;
 
 use gitlab::api::{
-    projects::{issues::Issues, merge_requests::MergeRequests},
+    projects::{issues::Issues, merge_requests::MergeRequests, Project},
     AsyncQuery,
 };
 use std::{io, sync::Arc};
@@ -104,20 +104,23 @@ async fn run_fetch(app: Arc<Mutex<App>>) -> Option<Box<dyn std::error::Error>> {
     };
     loop {
         let issues_query = Issues::builder().project(namespace.clone()).build().ok()?;
-        // let issues: Vec<Issue> = issues_query.query_async(&api).await.ok()?;
-
+        let project_query = Project::builder().project(namespace.clone()).build().ok()?;
         let mr_query = MergeRequests::builder()
             .project(namespace.clone())
             .build()
             .ok()?;
-        // let mrs: Vec<MergeRequest> = mr_query.query_async(&api).await.ok()?;
-        let (issues, mrs) =
-            tokio::join!(issues_query.query_async(&api), mr_query.query_async(&api));
+
+        let (issues, mrs, project) = tokio::join!(
+            issues_query.query_async(&api),
+            mr_query.query_async(&api),
+            project_query.query_async(&api),
+        );
         {
             let mut app = app.lock().await;
             // dbg!(i.clone());
             app.issues = issues.ok()?;
             app.mrs = mrs.ok()?;
+            app.project = project.ok()?;
         }
         sleep(Duration::from_secs(1)).await;
     }
