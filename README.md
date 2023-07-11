@@ -4,7 +4,7 @@ Sure! Here's an updated version of the README with emojis:
 
 A TUI app for interacting with GitLab issues and merge requests.
 
-![image](https://github.com/NiklasTreml/gitlab-tui/assets/27763017/7efaabd3-dd68-4cb8-9e6f-9833a1916b81)
+![image](https://github.com/NiklasTreml/gitlab-tui/assets/27763017/e126e2cd-1e44-43ba-8e23-d124daa59621)
 
 ## Installation ⚙️
 
