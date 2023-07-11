@@ -1,8 +1,10 @@
 mod api;
 mod app;
+mod args;
 mod handlers;
 mod ui;
 
+use clap::Parser;
 use gitlab::api::{
     projects::{issues::Issues, merge_requests::MergeRequests, Project},
     AsyncQuery,
@@ -23,9 +25,13 @@ use crossterm::{
 use ratatui::{backend::CrosstermBackend, Terminal};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let app = Arc::new(Mutex::new(App::default()));
-    // create app and run it
+    let args = args::Args::parse();
 
+    let mut app = App::default();
+    app.active_git_remote = args.remote;
+    let app = Arc::new(Mutex::new(app));
+
+    // create app and run it
     run(app)
 }
 
@@ -92,17 +98,24 @@ async fn run_fetch(app: Arc<Mutex<App>>) -> Option<Box<dyn std::error::Error>> {
     // have queue on app
     // continously pull work items out of queue and run requests and update corresponding state
     // in separate thread, every second push update request
-    let (domain, namespace) = api::get_gitlab_remote("origin").ok()?; // todo change
-    let token = api::get_token(domain.clone()).ok()?;
-
-    let api = {
-        let this = gitlab::Gitlab::builder(domain, token).build_async().await;
-        match this {
-            Ok(t) => t,
-            Err(e) => panic!("Failed to connect to gitlab: {}", e),
-        }
-    };
+    let mut remote: String;
     loop {
+        {
+            // only hold the lock for getting the active remote
+            // release the lock after, so that fetching won't block the render loop
+            let app = app.clone();
+            remote = app.lock().await.active_git_remote.clone();
+        }
+        let (domain, namespace) = api::get_gitlab_remote(&remote).ok()?; // todo change
+        let token = api::get_token(domain.clone()).ok()?;
+
+        let api = {
+            let this = gitlab::Gitlab::builder(domain, token).build_async().await;
+            match this {
+                Ok(t) => t,
+                Err(e) => panic!("Failed to connect to gitlab: {}", e),
+            }
+        };
         let issues_query = Issues::builder().project(namespace.clone()).build().ok()?;
         let project_query = Project::builder().project(namespace.clone()).build().ok()?;
         let mr_query = MergeRequests::builder()

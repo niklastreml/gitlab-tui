@@ -1,7 +1,13 @@
 [package]
 name = "gitlab-tui"
-version = "0.1.0"
+version = "0.0.3"
 edition = "2021"
+authors = ["Niklas Treml"]
+description = "A terminal based UI for interacting with your gitlab issues and merge requests"
+keywords = ["gitlab", "tui", "cli", "terminal"]
+categories = ["command-line-utilities"]
+repository = "https://github.com/NiklasTreml/gitlab-tui"
+readme = "https://github.com/NiklasTreml/gitlab-tui/README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -15,3 +21,10 @@ url = "2.4.0"
 thiserror = "1.0.40"
 netrc-rs = "0.1.2"
 chrono = "0.4.26"
+clap = { version = "4.3.11", features = ["derive"] }
+
+
+[[bin]]
+bench = false
+path = "src/main.rs"
+name = "gitlab-tui"

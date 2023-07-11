@@ -18,7 +18,7 @@ pub struct App {
     pub selected_issue: Option<usize>,
     pub word_wrap: bool,
     pub selected_mr: Option<usize>,
-    pub active_git_remote: Option<String>,
+    pub active_git_remote: String,
     pub route: Route,
     pub scroll_offset: (u16, u16),
 }
@@ -42,7 +42,7 @@ impl App {
             selected_issue: None,
             selected_mr: None,
             route: Route::Root,
-            active_git_remote: None,
+            active_git_remote: "origin".to_string(),
             scroll_offset: (0, 0),
         }
     }
