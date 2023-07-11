@@ -1,8 +1,10 @@
 mod api;
 mod app;
+mod args;
 mod handlers;
 mod ui;
 
+use clap::Parser;
 use gitlab::api::{
     projects::{issues::Issues, merge_requests::MergeRequests, Project},
     AsyncQuery,
@@ -23,9 +25,14 @@ use crossterm::{
 use ratatui::{backend::CrosstermBackend, Terminal};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let app = Arc::new(Mutex::new(App::default()));
-    // create app and run it
+    let args = args::Args::parse();
 
+    println!("{}", args.origin);
+    let mut app = App::default();
+    app.active_git_remote = args.origin;
+    let app = Arc::new(Mutex::new(app));
+
+    // create app and run it
     run(app)
 }
 
