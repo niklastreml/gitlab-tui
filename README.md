@@ -16,10 +16,6 @@ You can use Cargo to download, compile, and install Gitlab TUI on your machine:
 cargo install gitlab-tui
 ```
 
-### Manual 📥
-
-You can also install Gitlab TUI manually by downloading a [binary](https://github.com/NiklasTreml/gitlab-tui/releases) for your system and copying it to a folder on your `$PATH`.
-
 ## Setup 🛠️
 
 To authenticate the GitLab API, Gitlab TUI uses the same `.netrc` config that Git uses for HTTP cloning. If you have already set up Git with `.netrc`, there is a good chance it will work immediately. If not, you will need to create one:
@@ -28,6 +24,7 @@ To authenticate the GitLab API, Gitlab TUI uses the same `.netrc` config that Gi
 2. Create a `.netrc` file:
 
    - On Linux and macOS:
+
      ```bash
      touch ~/.netrc
      ```
@@ -40,6 +37,7 @@ To authenticate the GitLab API, Gitlab TUI uses the same `.netrc` config that Gi
 3. Create an entry for your GitLab instance:
 
    - For GitLab.com:
+
      ```netrc
      machine gitlab.com
        login __token__

@@ -23,6 +23,7 @@ netrc-rs = "0.1.2"
 chrono = "0.4.26"
 clap = { version = "4.3.11", features = ["derive"] }
 
+
 [[bin]]
 bench = false
 path = "src/main.rs"
