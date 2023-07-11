@@ -9,6 +9,7 @@ categories = ["command-line-utilities"]
 repository = "https://github.com/NiklasTreml/gitlab-tui"
 documentation = "https://github.com/NiklasTreml/gitlab-tui"
 homepage = "https://github.com/NiklasTreml/gitlab-tui"
+license = "Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
