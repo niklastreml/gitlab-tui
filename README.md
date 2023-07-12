@@ -1,6 +1,8 @@
-Sure! Here's an updated version of the README with emojis:
-
 # Gitlab TUI 🚀
+![Continuous Integration](https://github.com/NiklasTreml/gitlab-tui/workflows/Continuous%20Integration/badge.svg?branch=master&event=push)
+![](https://img.shields.io/badge/license-Apache%202-blueviolet.svg)
+[![Crates.io](https://img.shields.io/crates/v/gitlab-tui.svg)](https://crates.io/crates/gitlab-tui)
+![](https://img.shields.io/github/v/release/NiklasTreml/gitlab-tui?color=%23c694ff)
 
 A TUI app for interacting with GitLab issues and merge requests.
 
