@@ -1,6 +1,6 @@
 [package]
 name = "gitlab-tui"
-version = "0.0.3"
+version = "0.1.0"
 edition = "2021"
 authors = ["Niklas Treml"]
 description = "A terminal based UI for interacting with your gitlab issues and merge requests"
