@@ -1,6 +1,6 @@
 [package]
 name = "gitlab-tui"
-version = "0.0.3"
+version = "0.1.0"
 edition = "2021"
 authors = ["Niklas Treml"]
 description = "A terminal based UI for interacting with your gitlab issues and merge requests"
@@ -24,6 +24,7 @@ thiserror = "1.0.40"
 netrc-rs = "0.1.2"
 chrono = "0.4.26"
 clap = { version = "4.3.11", features = ["derive"] }
+dirs = "5.0.1"
 
 
 [[bin]]

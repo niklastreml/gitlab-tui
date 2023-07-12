@@ -89,9 +89,7 @@ pub enum NetrcError {
 
 // parses .netrc  and tries to find a token for <domain>
 pub fn get_token(domain: String) -> Result<String, Box<dyn Error>> {
-    let home_dir = std::env::home_dir()
-        .ok_or(NetrcError::NotFound)?
-        .join(".netrc");
+    let home_dir = dirs::home_dir().ok_or(NetrcError::NotFound)?.join(".netrc");
     let netrc: String = fs::read_to_string(home_dir)?.parse()?;
 
     let res = netrc_rs::Netrc::parse(netrc, false).or(Err(NetrcError::Invalid))?;
